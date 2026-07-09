@@ -1,0 +1,157 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				max-width: 1000px;
+				margin: 0 auto;
+			}
+			.blog-header {
+				text-align: center;
+				margin: 3rem 0;
+			}
+			.blog-header h1 {
+				font-size: 3.5rem;
+				background: linear-gradient(to right, var(--text-main), #cbd5e1);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+			.blog-header p {
+				font-size: 1.2rem;
+			}
+			ul {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				gap: 2rem;
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			ul li {
+				background: var(--card-bg);
+				border: 1px solid var(--card-border);
+				border-radius: 16px;
+				overflow: hidden;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+			}
+			ul li:hover {
+				transform: translateY(-4px);
+				border-color: var(--card-hover-border);
+				box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+			}
+			ul li * {
+				text-decoration: none;
+			}
+			ul li:first-child {
+				grid-column: 1 / -1;
+				display: flex;
+				flex-direction: column;
+			}
+			@media (min-width: 768px) {
+				ul li:first-child {
+					flex-direction: row;
+					align-items: center;
+				}
+				ul li:first-child .img-container {
+					width: 60%;
+				}
+				ul li:first-child .content-container {
+					width: 40%;
+					padding: 3rem;
+				}
+			}
+			.img-container {
+				width: 100%;
+				overflow: hidden;
+				aspect-ratio: 16/9;
+			}
+			ul li:first-child .img-container {
+				aspect-ratio: auto;
+			}
+			ul li img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transition: transform 0.5s ease;
+			}
+			ul li:hover img {
+				transform: scale(1.05);
+			}
+			.content-container {
+				padding: 1.5rem;
+			}
+			.title {
+				margin: 0 0 0.5rem 0;
+				color: var(--text-main);
+				font-size: 1.5rem;
+				transition: color 0.2s ease;
+			}
+			ul li:first-child .title {
+				font-size: 2.5rem;
+			}
+			.date {
+				margin: 0;
+				color: var(--text-muted);
+				font-size: 0.9rem;
+			}
+			ul li:hover .title {
+				color: var(--accent);
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="blog-header">
+				<h1>MusicaTechLab Blog</h1>
+				<p>Tech insights, development logs, and tutorials.</p>
+			</div>
+			<section>
+				<ul>
+					{
+						posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<div class="img-container">
+										{post.data.heroImage ? (
+											<Image width={720} height={360} src={post.data.heroImage} alt="" />
+										) : (
+											<div style="width: 100%; height: 100%; background: rgba(255,255,255,0.05); display: flex; align-items:center; justify-content:center;">
+												<span style="font-size: 3rem; opacity: 0.5;">📝</span>
+											</div>
+										)}
+									</div>
+									<div class="content-container">
+										<h4 class="title">{post.data.title}</h4>
+										<p class="date">
+											<FormattedDate date={post.data.pubDate} />
+										</p>
+										{post.data.description && <p style="margin-top: 0.5rem; font-size: 0.95rem; color: var(--text-muted);">{post.data.description}</p>}
+									</div>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
