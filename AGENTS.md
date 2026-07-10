@@ -1,3 +1,10 @@
+# MusicaTechLab — blog（ブログ）
+
+> **共通ルール**: 作業前にリポジトリルートの [`../CLAUDE.md`](../CLAUDE.md) を必ず読むこと。
+> UI に触れる場合は [`../docs/DESIGN_SYSTEM.md`](../docs/DESIGN_SYSTEM.md) と [`../design/tokens.css`](../design/tokens.css) が唯一の正。
+> Score テーマ移行済み（2026-07-10）。配信先: https://blog.musicatechlab.com（CNAME は public/CNAME、base 設定なし）。
+> 記事は `src/content/blog/` に Markdown/MDX で追加（スキーマ: content.config.ts）。
+
 ## Development
 
 When starting the dev server, use background mode:
